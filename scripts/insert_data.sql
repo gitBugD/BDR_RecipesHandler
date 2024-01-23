@@ -632,7 +632,7 @@ INSERT INTO public.recipe_coursetype (idrecipe,namecoursetype) VALUES
 	 ((SELECT id FROM recipe_granola),(SELECT id FROM step_2_granola),(SELECT id FROM ingredient_oats),'gr',300.00),
 	 ((SELECT id FROM recipe_granola),(SELECT id FROM step_2_granola),(SELECT id FROM ingredient_nuts),'gr',100.00),
 	 ((SELECT id FROM recipe_granola),(SELECT id FROM step_2_granola),(SELECT id FROM ingredient_sunflower_seeds),'gr',50.00),
-	 ((SELECT id FROM recipe_granola),(SELECT id FROM step_2_granola),(SELECT id FROM ingredient_seed_oil,'gr',40.00),
+	 ((SELECT id FROM recipe_granola),(SELECT id FROM step_2_granola),(SELECT id FROM ingredient_seed_oil),'gr',40.00),
 	 ((SELECT id FROM recipe_soup),(SELECT id FROM step_1_soup),(SELECT id FROM ingredient_boiled_chestnuts),'gr',250.00),
 	 ((SELECT id FROM recipe_soup),(SELECT id FROM step_1_soup),(SELECT id FROM ingredient_sweet_potatoes),'gr',400.00)}	 
 INSERT INTO public.step_tool (idrecipe,nbstep,idtool) VALUES
