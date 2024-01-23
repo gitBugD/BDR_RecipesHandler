@@ -1,0 +1,11 @@
+DELETE FROM step_ingredient;
+DELETE FROM step_tool;
+DELETE FROM ingredient_restriction;
+DELETE FROM ingredient_season;
+DELETE FROM recipe_coursetype;
+DELETE FROM tool;
+DELETE FROM step;
+DELETE FROM recipe;
+DELETE FROM ingredient;
+DELETE FROM allergen;
+DELETE FROM creator;
