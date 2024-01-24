@@ -9,11 +9,11 @@ stored procedures and triggers in [this](scripts) folder.
 More information on the application's design and how you can use it can be found on
 [this Google Docs document](https://docs.google.com/document/d/1yq4bLZKWMSNKgP1fR1R-3Uk_EtYAevua4bEP0NmI4KM/edit?usp=sharing).
 
-# How to run the app
+## How to run the app
 
 We use Python version 3.11.4. The app should work with any Python 3 version. Download link: https://www.python.org/downloads/release/python-3114/.
 
-## Setting up the virtual environment
+### Setting up the virtual environment
 
 First, open any terminal and navigate to the folder where you want to store your environment.
 
@@ -29,7 +29,7 @@ At this point, we will see on the left the name of our virtual environment insid
 
 To deactivate the virtual environment, simply type ```deactivate```.
 
-## Setting up the postgreSQL database
+### Setting up the postgreSQL database
 
 To connect to the database:
 - Create a postgreSQL database named RecipesHandler.
@@ -46,7 +46,7 @@ To connect to the database:
 - An additional script [delete_all.sql](scripts/delete_all.sql) is provided to delete all data from the database. 
 It can be used to reset the database to its initial state if you want.
 
-## Running the app
+### Running the app
 
 Inside the virtual environment:
 - Upgrade pip ```python.exe -m pip install --upgrade pip```
