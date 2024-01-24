@@ -39,9 +39,9 @@ To connect to the database:
     - [create_views.sql](scripts/create_views.sql)
     - [stored_procs_insert.sql](scripts/stored_procs_insert.sql)
     - [stored_procs_delete.sql](scripts/stored_procs_delete.sql)
+    - [stored_procs_update.sql](scripts/stored_procs_update.sql)
     - [create_trigger.sql](scripts/create_trigger.sql)
-- Modify configuration file [secrets.toml](.streamlit/secrets.toml) by setting, if necessary, a new port, 
-- username and/or password to match your postgreSQL configuration.
+- Modify configuration file [secrets.toml](.streamlit/secrets.toml) by setting, if necessary, a new port, username and/or password to match your postgreSQL configuration.
 
 - An additional script [delete_all.sql](scripts/delete_all.sql) is provided to delete all data from the database. 
 It can be used to reset the database to its initial state if you want.
