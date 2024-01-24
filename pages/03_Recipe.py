@@ -4,21 +4,20 @@ from classes.Ingredient import Ingredient
 import classes.enums as enums
 from sqlalchemy import text
 from st_pages import add_indentation
+import traceback
 
 st.set_page_config(
     page_title='New Recipe',
     page_icon=':cake:'
 )
 
-# Either this or add_indentation() MUST be called on each page in your
-# app to add indendation in the sidebar
 add_indentation()
 
 state = st.session_state
 st.cache_data.clear()
 
 # Initialize connection.
-conn = st.connection("postgresql", type="sql")
+conn = st.connection('postgresql', type='sql')
 
 #get creators
 df_creators = conn.query('SELECT id, name FROM creators;')
@@ -51,37 +50,37 @@ def remove_step():
     state.step_counter -= 1
     state.steps.pop()
 
-def add_ingredient(nbStep : int):
+def add_ingredient(nbStep):
     if 'ingredient_counter' not in state:
         state.ingredient_counter = 0
     state.ingredient_counter += 1
     state.step_ingredients[nbStep].append(Ingredient('',state.ingredient_counter))
 
-def remove_ingredient(nbStep : int):
+def remove_ingredient(nbStep):
     if 'ingredient_counter' in state:
         state.ingredient_counter -= 1
     state.step_ingredients[nbStep].pop()
 
 def is_form_valid() -> bool:
     if len(name) <= 0:
-        st.error('The recipe name is required', icon="🚨")
+        st.error('The recipe name is required', icon='🚨')
         return False
     if len(description) <= 0:
-        st.error('The recipe description is required', icon="🚨")
+        st.error('The recipe description is required', icon='🚨')
         return False
     for step in state.steps:
         if len(instructions) <= 0:
-            st.error('Instructions are required for all steps. Check step ' + str(step.nb), icon="🚨")
+            st.error('Instructions are required for all steps. Check step ' + str(step.nb), icon='🚨')
             return False
         if len(preptime) <= 0 or not preptime.isdigit():
-            st.error('The preparation time must be a positive integer. Check step ' + str(step.nb), icon="🚨")
+            st.error('The preparation time must be a positive integer. Check step ' + str(step.nb), icon='🚨')
             return False
         if len(cookingtime) > 0 and not cookingtime.isdigit():
-            st.error('The cooking time must be a positive integer. Check step ' + str(step.nb), icon="🚨")
+            st.error('The cooking time must be a positive integer. Check step ' + str(step.nb), icon='🚨')
             return False    
         for ingredient in state.step_ingredients.get(step.nb):    
             if len(quantity) <= 0 or not quantity.isdigit():
-                st.error('Quantity must be a positive integer for each ingredient. Check step ' + str(step.nb), icon="🚨")
+                st.error('Quantity must be a positive integer for each ingredient. Check step ' + str(step.nb), icon='🚨')
                 return False
     return True
 
@@ -122,23 +121,24 @@ def create_new_recipe(name, description, portions, difficulty, cost):
                                         quantity=state['quantity_' + str(ingredient.id)]))
         s.commit()
         st.write('Successfully created!')
-    except:
-        st.write('An exception occured in creation :(')
+    except Exception:
+        print(traceback.format_exc())
+        st.write('An exception occurred in creation 😢')
     finally:
         s.close()
 
 
-with st.form("new_recipe_form"):
+with st.form('new_recipe_form'):
     #creator
     select_creator = st.selectbox(
         'Creator', state.creators, key = 'select_creator'
     )
     
     #name
-    name = st.text_input("Name")
+    name = st.text_input('Name')
 
     #description
-    description = st.text_area("Description")
+    description = st.text_area('Description')
 
     #coursetype
     select_course_type = st.multiselect(
@@ -159,7 +159,7 @@ with st.form("new_recipe_form"):
 
     for step in state.steps:
         #instructions
-        instructions = st.text_area("Instructions step {}".format(step.nb), key="instructions_" + str(step.nb))
+        instructions = st.text_area('Instructions step {}'.format(step.nb), key='instructions_' + str(step.nb))
 
         #preptime
         preptime = st.text_input('Preparation time', key = 'preptime_' + str(step.nb), placeholder='In minutes (simple number)')
@@ -190,18 +190,18 @@ with st.form("new_recipe_form"):
 
                     st.divider()
         
-        st.form_submit_button("Add ingredient step " + str(step.nb), on_click=add_ingredient, args=(step.nb,))
+        st.form_submit_button('Add ingredient step ' + str(step.nb), on_click=add_ingredient, args=(step.nb,))
         if 'state.step_ingredients' in state: 
             if len(state.step_ingredients.get(step.nb)) >= 1:
-                st.form_submit_button("Remove ingredient step " + str(step.nb), on_click=remove_ingredient, args=(step.nb,))
+                st.form_submit_button('Remove ingredient step ' + str(step.nb), on_click=remove_ingredient, args=(step.nb,))
     if 'step_counter' in state:
         if state.step_counter < 10:
-            st.form_submit_button("Add step", on_click=add_step)
+            st.form_submit_button('Add step', on_click=add_step)
     if len(state.steps) > 1:
-        st.form_submit_button("Remove step", on_click=remove_step)
+        st.form_submit_button('Remove step', on_click=remove_step)
 
     # Every form must have a submit button.
-    submitted = st.form_submit_button("Submit")
+    submitted = st.form_submit_button('Submit')
     if submitted:
         if(is_form_valid()):
             create_new_recipe(name, description, portions, slider_difficulty, slider_cost)

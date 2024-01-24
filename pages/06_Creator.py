@@ -3,13 +3,17 @@ from sqlalchemy import text
 from st_pages import add_indentation
 import traceback
 
-st.set_page_config(
-    page_title='New Creator',
-    page_icon=':doughnut:'
-)
-
-# Either this or add_indentation() MUST be called on each page in your
-# app to add indendation in the sidebar
+if 'id' in st.query_params:
+    st.set_page_config(
+        page_title='Update Creator',
+        page_icon=':doughnut:'
+    )
+else:
+    st.set_page_config(
+        page_title='New Creator',
+        page_icon=':doughnut:'
+    )
+    
 add_indentation()
 
 state = st.session_state
@@ -19,7 +23,7 @@ st.cache_data.clear()
 conn = st.connection('postgresql', type='sql')
 
 def populate():
-    state.idcreator = args_id[0]
+    state.idcreator = args_id
     df_creators = conn.query('SELECT name FROM creators WHERE id = ' + args_id)
     if len(list(df_creators.itertuples())) > 0:
         idx, state.name_creator = next(df_creators.itertuples())
@@ -44,19 +48,19 @@ def create_new_creator():
         st.write('Successfully created!')
     except Exception:
         print(traceback.format_exc())
-        st.write('An exception occured in creation :(')
+        st.write('An exception occurred in creation 😢')
     finally:
         s.close()
 
 def update_creator():
     s = conn.session
     try:
-        s.execute(text('CALL update_creator(:idcreator, :name);'), params=dict(idcreator=state.idcreator, name=state.name_creator))
+        s.execute(text('CALL update_creator(:idcreator, :namecreator);'), params=dict(idcreator=state.idcreator, namecreator=state.name_creator))
         s.commit()
         st.rerun()
     except Exception:
         print(traceback.format_exc())
-        st.write('An exception occured in update :(')
+        st.write('An exception occurred in update 😢')
     finally:
         s.close()
 

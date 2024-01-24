@@ -1,25 +1,21 @@
 import streamlit as st
-from datetime import time
-from classes.Recipe import Recipe
 from classes.Allergen import Allergen
-import classes.enums as enums
 from sqlalchemy import text
 from st_pages import add_indentation
+import traceback
 
 st.set_page_config(
-    page_title='Delete Allergen',
+    page_title='List Allergens',
     page_icon=':peanuts:'
 )
 
-# Either this or add_indentation() MUST be called on each page in your
-# app to add indendation in the sidebar
 add_indentation()
 
 state = st.session_state
 st.cache_data.clear()
 
 # Initialize connection.
-conn = st.connection("postgresql", type="sql")
+conn = st.connection('postgresql', type='sql')
 
 def get_allergens() -> [Allergen]:    
     st.cache_data.clear()
@@ -35,8 +31,9 @@ def delete_allergen(idallergen):
         s.execute(text('CALL delete_allergen(:idallergen);'), params=dict(idallergen = idallergen))
         s.commit()
         state.allergens_list = get_allergens()
-    except:
-        st.write('An exception occured in deletion 😢')
+    except Exception:
+        print(traceback.format_exc())
+        st.write('An exception occurred in deletion 😢')
     finally:
         s.close()
 
@@ -51,9 +48,10 @@ with st.container():
     
     for allergen in state.allergens_list:
         title_col, edit_col, delete_col = st.columns([12,1,1])
+        edit_link = 'Allergen?id={}'
         with title_col:
             st.markdown('##### ' + allergen.name)
         with edit_col:
-            st.button(':pencil:', key = edit_button_txt.format(allergen.id) , help = 'edit')
+            st.link_button(':pencil:', edit_link.format(allergen.id), help = 'edit')
         with delete_col:
             st.button(':wastebasket:', key = delete_button_txt.format(allergen.id), help = 'delete', on_click=delete_allergen, args=(allergen.id,))
