@@ -18,29 +18,29 @@ add_indentation()
 # should be
 show_pages(
     [
-        Page("01_🍳_Home.py", "Home", ":cooking:"),
-        Page("pages/02_🍜_Random.py", "Random", ":ramen:"),
-        Section("Create", icon=":cake:"),
+        Page('01_🍳_Home.py', 'Home', ':cooking:'),
+        Page('pages/02_🍜_Random.py', 'Random', ':ramen:'),
+        Section('Create/Edit', icon=':cake:'),
         # Pages after a section will be indented
-        Page("pages/03_New_Recipe.py"),
-        Page("pages/04_New_Ingredient.py"),
-        Page("pages/05_New_Allergen.py"),
-        Page("pages/06_New_Creator.py"),
-        Page("pages/07_New_Tool.py"),
-        Section("Delete", icon=":mushroom:"),
-        Page("pages/08_Delete_Ingredient.py"),
-        Page("pages/09_Delete_Allergen.py"),
-        Page("pages/10_Delete_Creator.py"),
-        Page("pages/11_Delete_Tool.py")
+        Page('pages/03_Recipe.py'),
+        Page('pages/04_Ingredient.py'),
+        Page('pages/05_Allergen.py'),
+        Page('pages/06_Creator.py'),
+        Page('pages/07_Tool.py'),
+        Section('List', icon=':sushi:'),
+        Page('pages/08_All_Ingredients.py'),
+        Page('pages/09_All_Allergens.py'),
+        Page('pages/10_All_Creators.py'),
+        Page('pages/11_All_Tools.py')
         # Unless you explicitly say in_section=False
-        #Page("Not in a section", in_section=False)
+        #Page('Not in a section', in_section=False)
     ]
 )
 
 state = st.session_state
 
 # Initialize connection.
-conn = st.connection("postgresql", type="sql")
+conn = st.connection('postgresql', type='sql')
 
 def basic_query_recipes() -> str:    
     st.cache_data.clear()
@@ -214,8 +214,9 @@ with st.container():
         title = '### [{}](Random?id={})'
         with title_col:
             st.markdown(title.format(recipe.name, recipe.id))
-        with edit_col:
-            st.button(':pencil:', key = edit_button_txt.format(recipe.id) , help = 'edit')
+        #update for recipes not implemented
+        #with edit_col:
+        #    st.button(':pencil:', key = edit_button_txt.format(recipe.id) , help = 'edit')
         with delete_col:
             st.button(':wastebasket:', key = delete_button_txt.format(recipe.id), help = 'delete', on_click=delete_recipe, args=(recipe.id,))
         st.markdown(recipe.description)

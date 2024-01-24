@@ -1,7 +1,6 @@
 import streamlit as st
 from datetime import timedelta
 from math import trunc
-from copy import deepcopy
 from classes.Recipe import Recipe
 from classes.Creator import Creator
 from classes.Step import Step
@@ -15,22 +14,14 @@ st.set_page_config(
     page_icon=':ramen:'
 )
 
-# Either this or add_indentation() MUST be called on each page in your
-# app to add indendation in the sidebar
 add_indentation()
 
 state = st.session_state
 state.rate = 1
 state.txt_ingredients = ''
 
-#take query parameter from url if exists
-if 'args_id' in st.query_params:
-    ags_id = st.query_params['id']
-else:
-    args_id = None
-
 # Initialize connection.
-conn = st.connection("postgresql", type="sql")
+conn = st.connection('postgresql', type='sql')
 
 def basic_query_recipes() -> str:
     return 'SELECT id, name, description, nbpeople, difficulty, cost, creatorid, creator FROM single_recipe'
@@ -84,12 +75,15 @@ def get_tools(query) -> [Tool]:
         tools.append(Tool(row.name, row.id))
     return tools
 
-if args_id == None:
-    # a random recipe in db
+# take query parameter from url if exists
+if 'id' in st.query_params:
+    args_id = st.query_params['id']
+    id_recipe = args_id
+# else take a random recipe in db
+else:
     query_random_id = 'SELECT id FROM single_recipe ORDER BY random() LIMIT 1'
     idx, id_recipe = next(conn.query(query_random_id).itertuples())
-else:
-    id_recipe = args_id[0]
+
 query_recipes = basic_query_recipes() + ' WHERE id = ' + str(id_recipe)
 state.recipe = get_recipe(query_recipes)
 
@@ -110,9 +104,9 @@ def change_nb_portions():
     if 'portions' not in state:
         state.portions = state.recipe.nbPeople
     state.rate = state.recipe.nbPeople / state.portions
-    state.txt_ingredients = "**Ingredients:**  \n\n"
+    state.txt_ingredients = '**Ingredients:**  \n\n'
     for ingredient in state.ingredients:
-            state.txt_ingredients += "{} *{}* {}  \n\n".format(str(round(ingredient.quantity / state.rate)),str(ingredient.unit), ingredient.name)   
+            state.txt_ingredients += '{} *{}* {}  \n\n'.format(str(round(ingredient.quantity / state.rate)),str(ingredient.unit), ingredient.name)   
 
 change_nb_portions()
 st.sidebar.markdown(state.txt_ingredients)
@@ -125,7 +119,7 @@ slider_cost = st.sidebar.slider(
 st.sidebar.divider()
 
 if len(state.allergens) > 0:
-    st.sidebar.markdown("**Allergerns:**")
+    st.sidebar.markdown('**Allergerns:**')
 
     for allergen in state.allergens:
         st.sidebar.markdown(allergen.name)
@@ -139,13 +133,13 @@ for step in state.steps:
     prep_time += timedelta(hours=step.prep_time.hour, minutes=step.prep_time.minute)
     cooking_time += timedelta(hours=step.cooking_time.hour, minutes=step.cooking_time.minute)
 
-st.sidebar.markdown("**Preparation time:** {:0>2}:{:0>2}".format(trunc(prep_time.seconds/3600), trunc(prep_time.seconds/60)%60))
-st.sidebar.markdown("**Cooking time:** {:0>2}:{:0>2}".format(trunc(cooking_time.seconds/3600), trunc(cooking_time.seconds/60)%60))
+st.sidebar.markdown('**Preparation time:** {:0>2}:{:0>2}'.format(trunc(prep_time.seconds/3600), trunc(prep_time.seconds/60)%60))
+st.sidebar.markdown('**Cooking time:** {:0>2}:{:0>2}'.format(trunc(cooking_time.seconds/3600), trunc(cooking_time.seconds/60)%60))
 
 st.sidebar.divider()
 
 if len(state.tools) > 0:
-    st.sidebar.markdown("**Tools:**")
+    st.sidebar.markdown('**Tools:**')
 
     for tool in state.tools:
         st.sidebar.markdown(tool.name)

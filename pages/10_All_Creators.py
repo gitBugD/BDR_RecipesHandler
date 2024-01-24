@@ -1,25 +1,21 @@
 import streamlit as st
-from datetime import time
-from classes.Recipe import Recipe
 from classes.Creator import Creator
-import classes.enums as enums
 from sqlalchemy import text
 from st_pages import add_indentation
+import traceback
 
 st.set_page_config(
-    page_title='Delete Creator',
+    page_title='List Creators',
     page_icon=':doughnut:'
 )
 
-# Either this or add_indentation() MUST be called on each page in your
-# app to add indendation in the sidebar
 add_indentation()
 
 state = st.session_state
 st.cache_data.clear()
 
 # Initialize connection.
-conn = st.connection("postgresql", type="sql")
+conn = st.connection('postgresql', type='sql')
 
 def get_creators() -> [Creator]:    
     st.cache_data.clear()
@@ -35,8 +31,9 @@ def delete_creator(idcreator):
         s.execute(text('CALL delete_creator(:idcreator);'), params=dict(idcreator = idcreator))
         s.commit()
         state.creators_list = get_creators()
-    except:
-        st.write('An exception occured in deletion 😢')
+    except Exception:
+        print(traceback.format_exc())
+        st.write('An exception occurred in deletion 😢')
     finally:
         s.close()
 
@@ -51,7 +48,7 @@ with st.container():
     
     for creator in state.creators_list:
         title_col, edit_col, delete_col = st.columns([12,1,1])
-        edit_link = 'New%20Creator?id={}'
+        edit_link = 'Creator?id={}'
         with title_col:
             st.markdown('##### ' + creator.name)
         with edit_col:
