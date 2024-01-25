@@ -27,6 +27,13 @@ Activate the virtual environment by running:
 
 At this point, we will see on the left the name of our virtual environment inside parentheses.
 
+Install the required packages:
+- Upgrade pip ```python.exe -m pip install --upgrade pip```
+- Install Streamlit using pip: ```pip install streamlit```
+- Install Sqlalchemy to be able to access the database, using pip: ```pip install sqlalchemy```
+- Install psycopg2 to be able to use the database connection, using pip: ```pip install psycopg2-binary```
+- Install st_pages using pip: ```pip install st_pages```
+
 To deactivate the virtual environment, simply type ```deactivate```.
 
 ### Setting up the postgreSQL database
@@ -47,12 +54,6 @@ To connect to the database:
 It can be used to reset the database to its initial state if you want.
 
 ### Running the app
-
-Inside the virtual environment:
-- Upgrade pip ```python.exe -m pip install --upgrade pip```
-- Install Streamlit using pip: ```pip install streamlit```
-- Install Sqlalchemy to be able to access the database, using pip: ```pip install sqlalchemy```
-- Install psycopg2 to be able to use the database connection, using pip: ```pip install psycopg2-binary```
-- Install st_pages using pip: ```pip install st_pages```
-- Run (inside the app folder) with ```streamlit run .\01_🍳_Home.py```
-- Refresh the page to see the menu well formatted.
+- In your terminal, navigate to the folder containing [01_🍳_Home.py](01_🍳_Home.py) and run 
+the web app using ```streamlit run .\01_🍳_Home.py```. This should open it in your browser.
+- Refresh the page if needed to see the menu well formatted.
