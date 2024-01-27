@@ -120,7 +120,15 @@ def create_new_recipe(name, description, portions, difficulty, cost):
                                         unit=state['select_unit_' + str(ingredient.id)], 
                                         quantity=state['quantity_' + str(ingredient.id)]))
         s.commit()
-        st.write('Successfully created!')
+        st.write('Successfully created!') 
+        
+        state.step_counter = 1
+        state.steps = []
+        state.steps.append(Step(state.step_counter, '', 0))
+        state.step_ingredients = {}
+        if state.step_ingredients.get(state.step_counter) == None:
+            state.step_ingredients[state.step_counter] = []
+
     except Exception:
         print(traceback.format_exc())
         st.write('An exception occurred in creation 😢')
@@ -172,7 +180,7 @@ with st.form('new_recipe_form'):
             'Tools', state.tools, key = 'select_tools_' + str(step.nb)
         )
     
-        if 'state.step_ingredients' in state: 
+        if 'step_ingredients' in state: 
             if state.step_ingredients.get(step.nb) != None:
                 for ingredient in state.step_ingredients.get(step.nb):
                     #ingredients
@@ -191,7 +199,7 @@ with st.form('new_recipe_form'):
                     st.divider()
         
         st.form_submit_button('Add ingredient step ' + str(step.nb), on_click=add_ingredient, args=(step.nb,))
-        if 'state.step_ingredients' in state: 
+        if 'step_ingredients' in state: 
             if len(state.step_ingredients.get(step.nb)) >= 1:
                 st.form_submit_button('Remove ingredient step ' + str(step.nb), on_click=remove_ingredient, args=(step.nb,))
     if 'step_counter' in state:
@@ -205,4 +213,3 @@ with st.form('new_recipe_form'):
     if submitted:
         if(is_form_valid()):
             create_new_recipe(name, description, portions, slider_difficulty, slider_cost)
-

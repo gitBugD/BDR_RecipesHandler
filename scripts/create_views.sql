@@ -13,7 +13,8 @@ ingredient_restriction.namerestriction AS restriction, tool.name AS tool
     LEFT JOIN ingredient_season ON ingredient_season.idingredient = ingredient.id
     LEFT JOIN ingredient_restriction ON ingredient_restriction.idingredient = ingredient.id
     LEFT JOIN step_tool ON step_tool.idrecipe = step.idrecipe AND step_tool.nbstep = step.nb
-    LEFT JOIN tool ON step_tool.idtool = tool.id;
+    LEFT JOIN tool ON step_tool.idtool = tool.id
+    ORDER BY recipe.name;
    
 DROP VIEW IF EXISTS  recipe_steps;
 CREATE VIEW recipe_steps AS

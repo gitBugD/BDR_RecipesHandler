@@ -78,8 +78,8 @@ CREATE TABLE Step(
 idRecipe int,
 nb smallint,
 instructions text NOT NULL CONSTRAINT Instructions_NotEmpty CHECK (instructions != ''),
-prepTime int NOT NULL DEFAULT 5 CONSTRAINT PrepTime_Min CHECK (prepTime > 0 OR cookingTime IS NOT NULL), --in minutes
-cookingTime int CONSTRAINT CookingTime_Min CHECK (cookingTime >= 0), --in minutes
+prepTime int NOT NULL CONSTRAINT PrepTime_Min CHECK (prepTime > 0 OR cookingTime <> 0), --in minutes
+cookingTime int NOT NULL CONSTRAINT CookingTime_Min CHECK (cookingTime >= 0), --in minutes
 CONSTRAINT PK_Step PRIMARY KEY(idRecipe, nb),
 CONSTRAINT FK_Step_idRecipe FOREIGN KEY(idRecipe) REFERENCES Recipe(id) ON DELETE CASCADE ON UPDATE CASCADE
 );

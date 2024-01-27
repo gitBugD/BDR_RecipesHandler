@@ -6,10 +6,7 @@ AS $$
 	DECLARE nb_next_step int;
 	BEGIN
 		SELECT COUNT(step.nb) INTO nb_existing_steps FROM step WHERE idrecipe = NEW.idrecipe GROUP BY idrecipe;
-		SELECT MAX(step.nb) + 1 INTO nb_next_step FROM step WHERE idrecipe = NEW.idrecipe GROUP BY idrecipe;
 		IF nb_existing_steps > 10 THEN RAISE EXCEPTION 'Too many steps for recipe' USING HINT = 'It is not possible to insert new steps';
-		END IF;
-		IF nb_next_step != NEW.nb THEN RAISE EXCEPTION 'Steps not in the right order %', nb_next_step USING HINT = 'Step numbers must follow numerical order';
 		END IF;
 		RETURN NEW;
 	END;
