@@ -31,16 +31,18 @@ state.tools = {row.name:row.id for row in df_tools.itertuples()}
 df_ingredients = conn.query('SELECT id, name FROM ingredients;')
 state.ingredients = {row.name:row.id for row in df_ingredients.itertuples()}
 
+def initialize_step():
+    state.step_counter = 1
+    state.steps_single = []
+    state.steps_single.append(Step(state.step_counter, '', 0))
+    state.step_ingredients = {}
+    if state.step_ingredients.get(state.step_counter) == None:
+        state.step_ingredients[state.step_counter] = []
+
 def add_step():
-    if 'step_counter' not in state:
-        state.step_counter = 0
     if state.step_counter < 10:
         state.step_counter += 1
-        if 'steps' not in state:
-            state.steps = []
-        state.steps.append(Step(state.step_counter, '', 0))
-        if 'step_ingredients' not in state:
-            state.step_ingredients = {}
+        state.steps_single.append(Step(state.step_counter, '', 0))
         if state.step_ingredients.get(state.step_counter) == None:
             state.step_ingredients[state.step_counter] = []
         
@@ -48,7 +50,7 @@ def remove_step():
     for ingredient in state.step_ingredients[state.step_counter]:
         remove_ingredient(state.step_counter)
     state.step_counter -= 1
-    state.steps.pop()
+    state.steps_single.pop()
 
 def add_ingredient(nbStep):
     if 'ingredient_counter' not in state:
@@ -68,7 +70,7 @@ def is_form_valid() -> bool:
     if len(description) <= 0:
         st.error('The recipe description is required', icon='🚨')
         return False
-    for step in state.steps:
+    for step in state.steps_single:
         if len(instructions) <= 0:
             st.error('Instructions are required for all steps. Check step ' + str(step.nb), icon='🚨')
             return False
@@ -96,7 +98,7 @@ def create_new_recipe(name, description, portions, difficulty, cost):
             for x in state.select_course_type:
                 s.execute(text('CALL insert_recipe_coursetype(:idrecipe, :namecoursetype);'), params=dict(idrecipe=state.new_recipe_id, namecoursetype=x))
 
-        for step in state.steps:
+        for step in state.steps_single:
             if 'cookingtime_' + str(step.nb) not in state or state['cookingtime_' + str(step.nb)] == '':
                 s.execute(text('CALL insert_step(:idrecipe, :nb, :instructions, :preptime);'), 
                                     params=dict(idrecipe=state.new_recipe_id, nb=step.nb,
@@ -121,14 +123,7 @@ def create_new_recipe(name, description, portions, difficulty, cost):
                                         quantity=state['quantity_' + str(ingredient.id)]))
         s.commit()
         st.write('Successfully created!') 
-        
-        state.step_counter = 1
-        state.steps = []
-        state.steps.append(Step(state.step_counter, '', 0))
-        state.step_ingredients = {}
-        if state.step_ingredients.get(state.step_counter) == None:
-            state.step_ingredients[state.step_counter] = []
-
+        initialize_step()
     except Exception:
         print(traceback.format_exc())
         st.write('An exception occurred in creation 😢')
@@ -162,10 +157,10 @@ with st.form('new_recipe_form'):
     #cost
     slider_cost = st.slider('Cost', 0, 5)
     
-    if 'steps' not in state:
-        add_step()
+    if 'steps_single' not in state:
+        initialize_step()
 
-    for step in state.steps:
+    for step in state.steps_single:
         #instructions
         instructions = st.text_area('Instructions step {}'.format(step.nb), key='instructions_' + str(step.nb))
 
@@ -202,10 +197,11 @@ with st.form('new_recipe_form'):
         if 'step_ingredients' in state: 
             if len(state.step_ingredients.get(step.nb)) >= 1:
                 st.form_submit_button('Remove ingredient step ' + str(step.nb), on_click=remove_ingredient, args=(step.nb,))
+    
     if 'step_counter' in state:
         if state.step_counter < 10:
             st.form_submit_button('Add step', on_click=add_step)
-    if len(state.steps) > 1:
+    if len(state.steps_single) > 1:
         st.form_submit_button('Remove step', on_click=remove_step)
 
     # Every form must have a submit button.
