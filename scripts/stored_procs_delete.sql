@@ -33,3 +33,15 @@ LANGUAGE SQL
 AS $$
 	DELETE FROM step WHERE idrecipe = idrecipe_step AND nb = nbstep;
 $$;
+
+CREATE OR REPLACE PROCEDURE delete_all_ingredient_restriction(IN idingredient integer)
+LANGUAGE sql
+AS $$
+	DELETE FROM ingredient_restriction WHERE ingredient_restriction.idingredient = idingredient;
+$$;
+
+CREATE OR REPLACE PROCEDURE delete_all_ingredient_season(IN idingredient integer)
+ LANGUAGE sql
+AS $$
+	DELETE FROM ingredient_season WHERE ingredient_season.idingredient = idingredient;
+$$;
